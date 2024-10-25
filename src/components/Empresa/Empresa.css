@@ -104,3 +104,12 @@
   border-width: 1px;
   border-radius: 10px;
 }
+
+.selectAtiva{
+  padding: 4px 10px;
+  margin-left: 10px;
+}
+
+.situacaoCadastral{
+  margin-bottom: 8px;
+}

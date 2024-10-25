@@ -27,6 +27,7 @@ const Empresa = () => {
         empresa.situacaoCadastral.toLowerCase() === filtro.toLowerCase()
     );
   };
+
   useEffect(() => {
     axios
       .get("https://coin-backend-qrd3.onrender.com/api/empresas")
@@ -73,7 +74,6 @@ const Empresa = () => {
 
   const handleSave = () => {
     if (editMode && selectedEmpresa) {
-      // Editar empresa
       axios
         .put(
           `https://coin-backend-qrd3.onrender.com/api/empresas/${selectedEmpresa.id}`,
@@ -91,7 +91,6 @@ const Empresa = () => {
           console.error("Erro ao editar a empresa:", error);
         });
     } else {
-      // Criar nova empresa
       axios
         .post("https://coin-backend-qrd3.onrender.com/api/empresas", formValues)
         .then((response) => {
@@ -125,7 +124,8 @@ const Empresa = () => {
             <div className="miniHeader">
               <h2>Empresas</h2>
               <div className="filter-container">
-                <select className="filter"
+                <select
+                  className="filter"
                   value={filtroSituacao}
                   onChange={(e) => setFiltroSituacao(e.target.value)}
                 >
@@ -207,14 +207,16 @@ const Empresa = () => {
                   onChange={handleInputChange}
                 />
               </div>
-              <div>
+              <div className="situacaoCadastral">
                 <label>Situação Cadastral:</label>
-                <input
-                  type="text"
+                <select className="selectAtiva"
                   name="situacaoCadastral"
                   value={formValues.situacaoCadastral}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="Ativa">Ativa</option>
+                  <option value="Inativa">Inativa</option>
+                </select>
               </div>
               <div className="form-actions">
                 <button className="addBtn" type="button" onClick={handleSave}>
