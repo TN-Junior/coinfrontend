@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import "./signup.css";
 
 function Signup() {
@@ -10,33 +10,52 @@ function Signup() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate(); // Novo hook para redirecionamento
 
   // Animação de queda
   const springProps = useSpring({
     from: { transform: "translateY(-100%)" },
     to: { transform: "translateY(0%)" },
-    config: { tension: 170, friction: 20 }, // Configurações de animação para suavidade
+    config: { tension: 170, friction: 20 },
   });
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
     if (password !== confirmPassword) {
       setError('As senhas não coincidem.');
       return;
     }
+
     try {
-      const response = await axios.post('https://auth-coin.onrender.com/auth/register', {
+      const response = await axios.post('http://localhost:5000/auth/register', {
         name,
         email,
         password
       });
 
-      // Se o cadastro for bem-sucedido, você pode redirecionar o usuário para a página de login
-      console.log('Cadastro bem-sucedido:', response.data);
+      // Se o cadastro for bem-sucedido, redirecionar para a página de login
+      setSuccess('Cadastro realizado com sucesso! Redirecionando...');
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      
+      // Adiciona um delay antes do redirecionamento
+      setTimeout(() => {
+        navigate('/'); // Redirecionamento para o endpoint "/"
+      }, 2000);
     } catch (error) {
       // Tratar erros de cadastro
+      if (error.response) {
+        setError(error.response.data.message || 'Erro ao criar conta. Tente novamente.');
+      } else {
+        setError('Erro de conexão com o servidor.');
+      }
       console.error('Erro ao cadastrar:', error);
-      setError('Erro ao criar conta. Tente novamente.');
     }
   };
 
@@ -73,14 +92,14 @@ function Signup() {
               <input type="password" placeholder="Confirme a Senha" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
             </div>
             {error && <div className="error-message">{error}</div>}
-            
-            <div className="login-link">
-            <button type="submit">Cadastrar</button>
-            <button><Link to={"/"}>Login</Link></button>
-             </div>
+            {success && <div className="success-message">{success}</div>}
+
+            <div className="button-group">
+              <button type="submit">Cadastrar</button>
+              {/*<Link to="/" className="login-link">Login</Link> */}
+            </div>
           </form>
         </div>
-        
       </animated.div>
     </div>
   );
