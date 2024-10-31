@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import "./signup.css";
 
 function Signup() {
@@ -11,7 +11,8 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate(); // Novo hook para redirecionamento
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Animação de queda
   const springProps = useSpring({
@@ -30,32 +31,33 @@ function Signup() {
       return;
     }
 
+    setLoading(true);
+
     try {
-      const response = await axios.post('http://localhost:5000/auth/register', {
+      const response = await axios.post('https://auth-coin.onrender.com/auth/register', {
         name,
         email,
         password
       });
 
-      // Se o cadastro for bem-sucedido, redirecionar para a página de login
       setSuccess('Cadastro realizado com sucesso! Redirecionando...');
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       
-      // Adiciona um delay antes do redirecionamento
       setTimeout(() => {
-        navigate('/'); // Redirecionamento para o endpoint "/"
+        navigate('/');
       }, 2000);
     } catch (error) {
-      // Tratar erros de cadastro
       if (error.response) {
         setError(error.response.data.message || 'Erro ao criar conta. Tente novamente.');
       } else {
         setError('Erro de conexão com o servidor.');
       }
       console.error('Erro ao cadastrar:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,9 +77,15 @@ function Signup() {
           <li></li>
         </ul>
       </div>
+
       <animated.div style={springProps} className="signup-content">
         <div className="coin-title">Coin</div>
         <div className="signup-box">
+          {/* Seta de Voltar */}
+          <div className="back-arrow" onClick={() => navigate('/')}>
+            &#8592; {/* Seta para esquerda */}
+          </div>
+
           <form className="signupform" onSubmit={handleSignup}>
             <div>
               <input type="text" placeholder="Nome Completo" value={name} onChange={(e) => setName(e.target.value)} />
@@ -95,8 +103,13 @@ function Signup() {
             {success && <div className="success-message">{success}</div>}
 
             <div className="button-group">
-              <button type="submit">Cadastrar</button>
-              {/*<Link to="/" className="login-link">Login</Link> */}
+              <button type="submit" disabled={loading}>
+                {loading ? (
+                  <div className="spinner"></div>
+                ) : (
+                  "Cadastrar"
+                )}
+              </button>
             </div>
           </form>
         </div>

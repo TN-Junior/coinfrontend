@@ -39,7 +39,7 @@ const Empresa = () => {
         console.error("Houve um erro ao buscar os dados das empresas:", error);
       });
   }, []);
-
+  console.log(empresas)
   const openModal = (empresa = null) => {
     if (empresa) {
       setEditMode(true);
@@ -54,16 +54,16 @@ const Empresa = () => {
       setFormValues({
         cnpj: "",
         nome: "",
-        situacaoCadastral: "",
+        situacaoCadastral: "Ativa", 
       });
     }
     setModalOpen(true);
   };
-
   const closeModal = () => {
     setModalOpen(false);
     setSelectedEmpresa(null);
   };
+
 
   const handleInputChange = (e) => {
     setFormValues({
@@ -72,7 +72,17 @@ const Empresa = () => {
     });
   };
 
+  const isValidCNPJ = (cnpj) => {
+    const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
+    return cnpjRegex.test(cnpj);
+  };
+
   const handleSave = () => {
+    if (!isValidCNPJ(formValues.cnpj)) {
+      alert("Por favor, insira um CNPJ no formato XX.XXX.XXX/0001-XX.");
+      return;
+    }
+  
     if (editMode && selectedEmpresa) {
       axios
         .put(
