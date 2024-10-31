@@ -11,7 +11,8 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate(); // Novo hook para redirecionamento
+  const [loading, setLoading] = useState(false); // Estado para controlar o loading
+  const navigate = useNavigate();
 
   // Animação de queda
   const springProps = useSpring({
@@ -30,8 +31,10 @@ function Signup() {
       return;
     }
 
+    setLoading(true); // Ativa o loading
+
     try {
-      const response = await axios.post('http://localhost:5000/auth/register', {
+      const response = await axios.post('https://auth-coin.onrender.com/auth/register', {
         name,
         email,
         password
@@ -44,18 +47,18 @@ function Signup() {
       setPassword('');
       setConfirmPassword('');
       
-      // Adiciona um delay antes do redirecionamento
       setTimeout(() => {
-        navigate('/'); // Redirecionamento para o endpoint "/"
+        navigate('/');
       }, 2000);
     } catch (error) {
-      // Tratar erros de cadastro
       if (error.response) {
         setError(error.response.data.message || 'Erro ao criar conta. Tente novamente.');
       } else {
         setError('Erro de conexão com o servidor.');
       }
       console.error('Erro ao cadastrar:', error);
+    } finally {
+      setLoading(false); // Desativa o loading após a tentativa de cadastro
     }
   };
 
@@ -95,7 +98,13 @@ function Signup() {
             {success && <div className="success-message">{success}</div>}
 
             <div className="button-group">
-              <button type="submit">Cadastrar</button>
+              <button type="submit" disabled={loading}>
+                {loading ? (
+                  <div className="spinner"></div>
+                ) : (
+                  "Cadastrar"
+                )}
+              </button>
               {/*<Link to="/" className="login-link">Login</Link> */}
             </div>
           </form>
