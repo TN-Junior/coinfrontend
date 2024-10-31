@@ -209,7 +209,7 @@ function Table() {
                 <td>{conta.conta}</td>
                 <td>{conta.status}</td>
                 <td>{conta.categoria}</td>
-                <td>{conta.valor}</td>
+                <td>{`R$ ${parseFloat(conta.valor).toFixed(2)}`}</td>
                 <td>{conta.vencimento}</td>
                 <td>{conta.pagamento}</td>
               </tr>
