@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import "./signup.css";
 
 function Signup() {
@@ -11,7 +11,7 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false); // Estado para controlar o loading
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Animação de queda
@@ -31,7 +31,7 @@ function Signup() {
       return;
     }
 
-    setLoading(true); // Ativa o loading
+    setLoading(true);
 
     try {
       const response = await axios.post('https://auth-coin.onrender.com/auth/register', {
@@ -40,7 +40,6 @@ function Signup() {
         password
       });
 
-      // Se o cadastro for bem-sucedido, redirecionar para a página de login
       setSuccess('Cadastro realizado com sucesso! Redirecionando...');
       setName('');
       setEmail('');
@@ -58,7 +57,7 @@ function Signup() {
       }
       console.error('Erro ao cadastrar:', error);
     } finally {
-      setLoading(false); // Desativa o loading após a tentativa de cadastro
+      setLoading(false);
     }
   };
 
@@ -78,9 +77,15 @@ function Signup() {
           <li></li>
         </ul>
       </div>
+
       <animated.div style={springProps} className="signup-content">
         <div className="coin-title">Coin</div>
         <div className="signup-box">
+          {/* Seta de Voltar */}
+          <div className="back-arrow" onClick={() => navigate('/')}>
+            &#8592; {/* Seta para esquerda */}
+          </div>
+
           <form className="signupform" onSubmit={handleSignup}>
             <div>
               <input type="text" placeholder="Nome Completo" value={name} onChange={(e) => setName(e.target.value)} />
@@ -105,7 +110,6 @@ function Signup() {
                   "Cadastrar"
                 )}
               </button>
-              {/*<Link to="/" className="login-link">Login</Link> */}
             </div>
           </form>
         </div>
