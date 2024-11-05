@@ -78,10 +78,10 @@ const Header = () => {
                     value={searchTerm} 
                     onChange={(e) => setSearchTerm(e.target.value)} 
                     onKeyDown={handleKeyDown} // Dispara busca ao pressionar "Enter"
-                />
-                <button onClick={handleSearch}>
+                />  
+                {/*<button onClick={handleSearch}>
                     <FaSearch />
-                </button>
+                </button> */}
             </div>
             {/*<button>Fernanda F.</button>*/}
         </div>
