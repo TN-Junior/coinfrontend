@@ -83,7 +83,7 @@ const Header = () => {
                     <FaSearch />
                 </button>
             </div>
-            <button>Fernanda F.</button>
+            {/*<button>Fernanda F.</button>*/}
         </div>
     );
 };
