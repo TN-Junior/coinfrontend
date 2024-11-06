@@ -90,9 +90,9 @@ const AccountPlan = () => {
     };
 
     // Exibe uma mensagem de carregamento enquanto os dados são buscados
-    if (isLoading) {
+    {/* if (isLoading) {
         return <div className="loading">Carregando...</div>;
-    }
+    } */}
 
     return (
         <div className='ContainerGeral'>
