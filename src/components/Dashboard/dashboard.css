@@ -24,3 +24,10 @@
 .despesas h2{
   color: darkred;
 }
+.chartsContainer {
+  border: 3px solid #004080; /* Ajuste a cor e a espessura da borda conforme desejado */
+  border-radius: 8px; /* Se quiser cantos arredondados */
+  padding: 20px; /* Para evitar que o conteúdo fique colado na borda */
+  margin: 10px; /* Para criar um espaço ao redor da borda, se necessário */
+  background-color: #e0f3ff; /* Ajuste conforme o fundo desejado */
+}

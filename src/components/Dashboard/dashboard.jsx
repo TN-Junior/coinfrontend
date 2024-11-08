@@ -29,12 +29,10 @@ const Dashboard = () => {
       .catch(error => console.error('Error fetching despesas:', error));
   }, []);
 
-  console.log(receitas);
-console.log(despesas);
-
   return (
     <div className='ContainerEmpresa'>
-      <Header />
+      {/* Passa showSearch={false} para ocultar a barra de pesquisa */}
+      <Header showSearch={false} />
       <div className='segundoContainer'>
         <Sidebar />
         <div className='chartsContainer'>
