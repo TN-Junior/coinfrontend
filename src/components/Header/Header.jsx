@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css'; // Estilo separado para o header
 import { FaSearch } from 'react-icons/fa'; // Importando o ícone de lupa
+import { useLocation } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ showSearch = true }) => {
     const [searchTerm, setSearchTerm] = useState('');
+    const location = useLocation();
 
-    // Função para tratar o clique na lupa ou enter no campo de busca
     const handleSearch = () => {
         if (searchTerm.trim()) {
             searchInTables(searchTerm);
@@ -15,14 +16,12 @@ const Header = () => {
         }
     };
 
-    // Função para lidar com a tecla "Enter"
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleSearch();
         }
     };
 
-    // Função para pesquisar nas tabelas
     const searchInTables = (term) => {
         const tables = document.querySelectorAll('table');
         tables.forEach((table) => {
@@ -35,35 +34,24 @@ const Header = () => {
                         rowContainsTerm = true;
                     }
                 });
-                if (rowContainsTerm) {
-                    row.style.display = ''; // Mostra a linha se corresponder ao termo
-                } else {
-                    row.style.display = 'none'; // Oculta a linha se não corresponder
-                }
+                row.style.display = rowContainsTerm ? '' : 'none';
             });
         });
     };
 
-    // Função para pesquisar no conteúdo da página fora das tabelas
     const searchInPageContent = (term) => {
-        const elements = document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6'); // Elementos comuns de conteúdo
+        const elements = document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6');
         elements.forEach((element) => {
-            if (element.textContent.toLowerCase().includes(term.toLowerCase())) {
-                element.style.backgroundColor = '#43a3de'; // Destaque os elementos encontrados
-            } else {
-                element.style.backgroundColor = ''; // Remove o destaque dos outros
-            }
+            element.style.backgroundColor = element.textContent.toLowerCase().includes(term.toLowerCase()) 
+                ? '#43a3de' 
+                : '';
         });
     };
 
     useEffect(() => {
-        // Limpa o destaque quando o termo de busca é removido
         if (!searchTerm) {
             const elements = document.querySelectorAll('p, div, span, h1, h2, h3, h4, h5, h6');
-            elements.forEach((element) => {
-                element.style.backgroundColor = ''; // Remove o destaque
-            });
-            // Mostra todas as linhas da tabela novamente
+            elements.forEach((element) => element.style.backgroundColor = '');
             const rows = document.querySelectorAll('table tr');
             rows.forEach((row) => row.style.display = '');
         }
@@ -71,18 +59,21 @@ const Header = () => {
 
     return (
         <div className="header">
-            <div className="search-bar">
-                <input 
-                    type="text" 
-                    placeholder="Pesquisar..." 
-                    value={searchTerm} 
-                    onChange={(e) => setSearchTerm(e.target.value)} 
-                    onKeyDown={handleKeyDown} // Dispara busca ao pressionar "Enter"
-                />  
-                {/*<button onClick={handleSearch}>
-                    <FaSearch />
-                </button> */}
-            </div>
+            {/* Renderiza a barra de pesquisa apenas se showSearch for true */}
+            {showSearch && (
+                <div className="search-bar">
+                    <input 
+                        type="text" 
+                        placeholder="Pesquisar..." 
+                        value={searchTerm} 
+                        onChange={(e) => setSearchTerm(e.target.value)} 
+                        onKeyDown={handleKeyDown}
+                    />  
+                    {/* <button onClick={handleSearch}>
+                        <FaSearch />
+                    </button> */}
+                </div>
+            )}
             {/*<button>Fernanda F.</button>*/}
         </div>
     );
