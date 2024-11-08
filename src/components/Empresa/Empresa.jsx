@@ -39,7 +39,8 @@ const Empresa = () => {
         console.error("Houve um erro ao buscar os dados das empresas:", error);
       });
   }, []);
-  console.log(empresas)
+  console.log(empresas);
+  
   const openModal = (empresa = null) => {
     if (empresa) {
       setEditMode(true);
@@ -59,16 +60,27 @@ const Empresa = () => {
     }
     setModalOpen(true);
   };
+  
   const closeModal = () => {
     setModalOpen(false);
     setSelectedEmpresa(null);
   };
 
+  const formatCNPJ = (value) => {
+    const cleanValue = value.replace(/\D/g, ""); // Remove caracteres não numéricos
+    return cleanValue
+      .replace(/^(\d{2})(\d)/, "$1.$2")
+      .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+      .replace(/\.(\d{3})(\d)/, ".$1/$2")
+      .replace(/(\d{4})(\d)/, "$1-$2")
+      .slice(0, 18); // Limita a 18 caracteres para o formato correto do CNPJ
+  };
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setFormValues({
       ...formValues,
-      [e.target.name]: e.target.value,
+      [name]: name === "cnpj" ? formatCNPJ(value) : value, // Aplica a formatação para o campo CNPJ
     });
   };
 
