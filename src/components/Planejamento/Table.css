@@ -117,3 +117,7 @@
 .inputSpace{
   padding: 3px 5px;
 }
+
+.categoria-menu{
+  display: flex;
+}
