@@ -25,8 +25,15 @@ export default function BarChart({
     .range([height - marginBottom, marginTop]);
 
   useEffect(() => {
-    d3.select(gx.current).call(d3.axisBottom(x).tickFormat(i => i + 1)); // Mostra índices no eixo X
-    d3.select(gy.current).call(d3.axisLeft(y));
+    d3.select(gx.current)
+      .call(d3.axisBottom(x).tickFormat(i => i + 1)) // Mostra índices no eixo X
+      .selectAll("text") // Seleciona os números do eixo X
+      .style("font-size", "16px"); // Define o tamanho da fonte dos números do eixo X
+
+    d3.select(gy.current)
+      .call(d3.axisLeft(y))
+      .selectAll("text") // Seleciona os números do eixo Y
+      .style("font-size", "16px"); // Define o tamanho da fonte dos números do eixo Y
   }, [gx, gy, x, y]);
 
   return (

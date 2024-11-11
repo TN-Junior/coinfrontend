@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import {useRef, useEffect} from "react";
+import { useRef, useEffect } from "react";
 
 export default function LinePlot({
   data,
@@ -15,8 +15,21 @@ export default function LinePlot({
   const x = d3.scaleLinear([0, data.length - 1], [marginLeft, width - marginRight]);
   const y = d3.scaleLinear(d3.extent(data), [height - marginBottom, marginTop]);
   const line = d3.line((d, i) => x(i), y);
-  useEffect(() => void d3.select(gx.current).call(d3.axisBottom(x)), [gx, x]);
-  useEffect(() => void d3.select(gy.current).call(d3.axisLeft(y)), [gy, y]);
+
+  useEffect(() => {
+    d3.select(gx.current)
+      .call(d3.axisBottom(x))
+      .selectAll("text") // Seleciona os números do eixo X
+      .style("font-size", "16px"); // Define o tamanho da fonte dos números do eixo X
+  }, [gx, x]);
+
+  useEffect(() => {
+    d3.select(gy.current)
+      .call(d3.axisLeft(y))
+      .selectAll("text") // Seleciona os números do eixo Y
+      .style("font-size", "16px"); // Define o tamanho da fonte dos números do eixo Y
+  }, [gy, y]);
+
   return (
     <svg width={width} height={height}>
       <g ref={gx} transform={`translate(0,${height - marginBottom})`} />
