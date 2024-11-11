@@ -38,9 +38,9 @@ const AccountPlan = () => {
         fetchAccounts();
     }, []);
 
-    // Filtra as contas por categoria
+    // Filtra as contas por categoria (ignorando maiúsculas/minúsculas)
     const filteredAccounts = accounts.filter(account => 
-        selectedCategory === 'Todos' || account.categoria === selectedCategory
+        selectedCategory === 'Todos' || account.categoria.toLowerCase() === selectedCategory.toLowerCase()
     );
 
     // Abre o popup para adicionar uma nova conta
