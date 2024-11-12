@@ -46,11 +46,11 @@ function Table() {
     try {
       if (isEditing) {
         // Editar conta existente
-        const response = await axios.put(`https://coin-backend-qrd3.onrender.com/api/contas/${editId}`, novaConta);
+        const response = await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/contas/${editId}`, novaConta);
         setContas(contas.map(conta => (conta.id === editId ? response.data : conta)));
       } else {
         // Adicionar nova conta
-        const response = await axios.post('https://coin-backend-qrd3.onrender.com/api/contas', novaConta);
+        const response = await axios.post('https://coin-backend-production-5d52.up.railway.app/api/contas', novaConta);
         setContas([...contas, response.data]);
       }
       resetForm();
@@ -84,7 +84,7 @@ function Table() {
 
   const deletarConta = async (id) => {
     try {
-      await axios.delete(`https://coin-backend-qrd3.onrender.com/api/contas/${id}`);
+      await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/contas/${id}`);
       setContas(contas.filter(conta => conta.id !== id));
       setContaSelecionada(null);
     } catch (error) {

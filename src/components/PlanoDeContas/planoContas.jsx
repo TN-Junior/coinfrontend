@@ -61,7 +61,7 @@ const AccountPlan = () => {
     // Exclui uma conta do backend e atualiza a lista
     const handleDeleteAccount = async (id) => {
         try {
-            await axios.delete(`https://coin-backend-qrd3.onrender.com/api/planocontas/${id}`);
+            await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/planocontas/${id}`);
             fetchAccounts(); // Atualiza a lista após deletar
         } catch (error) {
             console.error('Erro ao deletar conta:', error);
@@ -72,9 +72,9 @@ const AccountPlan = () => {
     const handleSubmit = async () => {
         try {
             if (isEditMode) {
-                await axios.put(`https://coin-backend-qrd3.onrender.com/api/planocontas/${currentId}`, form);
+                await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/planocontas/${currentId}`, form);
             } else {
-                await axios.post('https://coin-backend-qrd3.onrender.com/api/planocontas', form);
+                await axios.post('https://coin-backend-production-5d52.up.railway.app/api/planocontas', form);
             }
             fetchAccounts(); // Atualiza a lista após salvar
             setIsPopupOpen(false); // Fecha o popup

@@ -84,10 +84,10 @@ const Pagamentos = () => {
       };
       if (pagamentoAtual) {
         // Se estiver editando, faz uma requisição PUT
-        await axios.put(`https://coin-backend-qrd3.onrender.com/api/pagamentos/${pagamentoAtual.id}`, pagamento);
+        await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${pagamentoAtual.id}`, pagamento);
       } else {
         // Caso contrário, é uma adição de novo pagamento
-        await axios.post('https://coin-backend-qrd3.onrender.com/api/pagamentos', pagamento);
+        await axios.post('https://coin-backend-production-5d52.up.railway.app/api/pagamentos', pagamento);
       }
       loadPagamentos(isReceitas);
       closeModal();
@@ -98,7 +98,7 @@ const Pagamentos = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://coin-backend-qrd3.onrender.com/api/pagamentos/${id}`);
+      await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${id}`);
       loadPagamentos(isReceitas);
     } catch (error) {
       console.error('Erro ao excluir pagamento:', error);
