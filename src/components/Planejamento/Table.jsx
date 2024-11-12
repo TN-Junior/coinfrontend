@@ -10,15 +10,16 @@ function Table() {
     conta: '',
     status: '',
     categoria: '',
-    valor: 0.0,
+    valor: '0,00',
     vencimento: '',
     pagamento: ''
   });
+  const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [contaSelecionada, setContaSelecionada] = useState(null);
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todas'); // "Todas", "Despesas", "Receitas"
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todas');
 
   useEffect(() => {
     carregarContas();
@@ -36,32 +37,68 @@ function Table() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNovaConta({
-      ...novaConta,
-      [name]: value
-    });
+
+    if (name === "conta") {
+      // Permite apenas letras e espaços para o campo `conta`
+      const formattedValue = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
+      setNovaConta({
+        ...novaConta,
+        conta: formattedValue
+      });
+    } else if (name === "valor") {
+      // Formata o valor para adicionar separadores de milhar e casas decimais
+      const formattedValue = formatCurrency(value);
+      setNovaConta({
+        ...novaConta,
+        valor: formattedValue
+      });
+    } else {
+      setNovaConta({
+        ...novaConta,
+        [name]: value
+      });
+    }
+  };
+
+  const formatCurrency = (value) => {
+    const cleanValue = value.replace(/\D/g, "");
+    const numberValue = parseFloat(cleanValue) / 100;
+    return numberValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }).replace("R$", "");
+  };
+
+  const validarCampos = () => {
+    const erros = {};
+    if (!novaConta.conta) erros.conta = 'A descrição da conta é obrigatória.';
+    if (!novaConta.status) erros.status = 'O status é obrigatório.';
+    if (!novaConta.categoria) erros.categoria = 'A categoria é obrigatória.';
+    if (parseFloat(novaConta.valor.replace(".", "").replace(",", ".")) <= 0) erros.valor = 'O valor deve ser maior que zero.';
+    if (!novaConta.vencimento) erros.vencimento = 'A data de vencimento é obrigatória.';
+    setErrors(erros);
+    return Object.keys(erros).length === 0;
   };
 
   const adicionarOuEditarConta = async () => {
+    if (!validarCampos()) return;
     try {
+      const valorEmNumero = parseFloat(novaConta.valor.replace(".", "").replace(",", "."));
+      const contaParaEnviar = { ...novaConta, valor: valorEmNumero };
       if (isEditing) {
-        // Editar conta existente
-        const response = await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/contas/${editId}`, novaConta);
+        const response = await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/contas/${editId}`, contaParaEnviar);
         setContas(contas.map(conta => (conta.id === editId ? response.data : conta)));
       } else {
-        // Adicionar nova conta
-        const response = await axios.post('https://coin-backend-production-5d52.up.railway.app/api/contas', novaConta);
+        const response = await axios.post('https://coin-backend-production-5d52.up.railway.app/api/contas', contaParaEnviar);
         setContas([...contas, response.data]);
       }
       resetForm();
-      carregarContas(); // Recarrega a lista de contas para garantir a atualização
+      carregarContas();
     } catch (error) {
       console.error('Erro ao adicionar ou editar conta:', error);
     }
   };
 
   const resetForm = () => {
-    setNovaConta({ conta: '', status: '', categoria: '', valor: 0.0, vencimento: '', pagamento: '' });
+    setNovaConta({ conta: '', status: '', categoria: '', valor: '0,00', vencimento: '', pagamento: '' });
+    setErrors({});
     setShowModal(false);
     setIsEditing(false);
     setEditId(null);
@@ -73,7 +110,7 @@ function Table() {
       conta: conta.conta,
       status: conta.status,
       categoria: conta.categoria,
-      valor: conta.valor,
+      valor: conta.valor.toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
       vencimento: conta.vencimento,
       pagamento: conta.pagamento
     });
@@ -138,10 +175,11 @@ function Table() {
             <input
               type="text"
               name="conta"
-              placeholder="Conta (ex: 34.604.380/0001-95)"
+              placeholder="Conta (ex: Descrição)"
               value={novaConta.conta}
               onChange={handleInputChange}
             />
+            {errors.conta && <span className="error">{errors.conta}</span>}
             <input
               type="text"
               name="status"
@@ -149,6 +187,7 @@ function Table() {
               value={novaConta.status}
               onChange={handleInputChange}
             />
+            {errors.status && <span className="error">{errors.status}</span>}
             <select
               name="categoria"
               className='select'
@@ -159,14 +198,16 @@ function Table() {
               <option value="Despesas">Despesas</option>
               <option value="Receitas">Receitas</option>
             </select>
+            {errors.categoria && <span className="error">{errors.categoria}</span>}
             <input
               className='inputSpace'
-              type="number"
+              type="text"
               name="valor"
-              placeholder="Valor (ex: 1000.50)"
+              placeholder="Valor (ex: 1.000,50)"
               value={novaConta.valor}
               onChange={handleInputChange}
             />
+            {errors.valor && <span className="error">{errors.valor}</span>}
             <input
               className='inputSpace'
               type="date"
@@ -175,6 +216,7 @@ function Table() {
               value={novaConta.vencimento}
               onChange={handleInputChange}
             />
+            {errors.vencimento && <span className="error">{errors.vencimento}</span>}
             <input
               className='inputSpace'
               type="date"
