@@ -22,7 +22,7 @@ function ForgotPassword() {
 
     try {
       // Endpoint de redefinição de senha
-      const response = await axios.post("https://coin-backend-production-5d52.up.railway.app/auth/reset-password", {
+      const response = await axios.post("https://auth-coin-production.up.railway.app/auth/reset-password", {
         email,
         newPassword,
       });
