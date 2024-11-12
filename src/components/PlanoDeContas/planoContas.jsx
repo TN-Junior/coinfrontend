@@ -23,7 +23,7 @@ const AccountPlan = () => {
     const fetchAccounts = async () => {
         try {
             setIsLoading(true); // Ativa o loader
-            const response = await axios.get('https://coin-backend-qrd3.onrender.com/api/planocontas');
+            const response = await axios.get('https://coin-backend-production-5d52.up.railway.app/api/planocontas');
             console.log('Contas recebidas do backend:', response.data); // Verificação
             setAccounts(response.data); // Atualiza o estado com os dados recebidos
         } catch (error) {

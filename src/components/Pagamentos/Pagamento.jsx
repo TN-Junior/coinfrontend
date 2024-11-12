@@ -35,7 +35,7 @@ const Pagamentos = () => {
   const loadPagamentos = async (isReceitas) => {
     try {
       const tipo = isReceitas ? 'RECEITA' : 'DESPESA';
-      const response = await axios.get(`https://coin-backend-qrd3.onrender.com/api/pagamentos/${tipo}`);
+      const response = await axios.get(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${tipo}`);
       setPagamentos(response.data);
     } catch (error) {
       console.error('Erro ao carregar pagamentos:', error);

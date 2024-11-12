@@ -26,7 +26,7 @@ function Table() {
 
   const carregarContas = async () => {
     try {
-      const response = await axios.get('https://coin-backend-qrd3.onrender.com/api/contas');
+      const response = await axios.get('https://coin-backend-production-5d52.up.railway.app/api/contas');
       setContas(response.data);
       console.log('Contas carregadas:', response.data);
     } catch (error) {

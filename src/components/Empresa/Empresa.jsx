@@ -30,7 +30,7 @@ const Empresa = () => {
 
   useEffect(() => {
     axios
-      .get("https://coin-backend-qrd3.onrender.com/api/empresas")
+      .get("https://coin-backend-production-5d52.up.railway.app/api/empresas")
       .then((response) => {
         console.log(response.data);
         setEmpresas(response.data);
