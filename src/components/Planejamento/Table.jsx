@@ -39,14 +39,12 @@ function Table() {
     const { name, value } = e.target;
 
     if (name === "conta") {
-      // Permite apenas letras e espaços para o campo `conta`
       const formattedValue = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
       setNovaConta({
         ...novaConta,
         conta: formattedValue
       });
     } else if (name === "valor") {
-      // Formata o valor para adicionar separadores de milhar e casas decimais
       const formattedValue = formatCurrency(value);
       setNovaConta({
         ...novaConta,
@@ -68,11 +66,26 @@ function Table() {
 
   const validarCampos = () => {
     const erros = {};
-    if (!novaConta.conta) erros.conta = 'A descrição da conta é obrigatória.';
-    if (!novaConta.status) erros.status = 'O status é obrigatório.';
-    if (!novaConta.categoria) erros.categoria = 'A categoria é obrigatória.';
-    if (parseFloat(novaConta.valor.replace(".", "").replace(",", ".")) <= 0) erros.valor = 'O valor deve ser maior que zero.';
-    if (!novaConta.vencimento) erros.vencimento = 'A data de vencimento é obrigatória.';
+
+    if (!novaConta.conta.trim()) {
+      erros.conta = 'A descrição da conta é obrigatória.';
+    }
+    if (!novaConta.status.trim()) {
+      erros.status = 'O status é obrigatório.';
+    }
+    if (!novaConta.categoria.trim()) {
+      erros.categoria = 'A categoria é obrigatória.';
+    }
+    if (isNaN(parseFloat(novaConta.valor.replace(".", "").replace(",", "."))) || parseFloat(novaConta.valor.replace(".", "").replace(",", ".")) <= 0) {
+      erros.valor = 'O valor deve ser maior que zero e válido.';
+    }
+    if (!novaConta.vencimento.trim()) {
+      erros.vencimento = 'A data de vencimento é obrigatória.';
+    }
+    if (novaConta.pagamento && isNaN(Date.parse(novaConta.pagamento))) {
+      erros.pagamento = 'A data de pagamento deve ser válida.';
+    }
+
     setErrors(erros);
     return Object.keys(erros).length === 0;
   };
