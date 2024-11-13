@@ -14,9 +14,10 @@ const Empresa = () => {
   const [filtroSituacao, setFiltroSituacao] = useState("Todas");
   const [formValues, setFormValues] = useState({
     cnpj: "",
-    nomeEmpresa: "",
-    situacaoCadastral: "",
+    nome: "",
+    situacaoCadastral: "Ativa",
   });
+  const [errors, setErrors] = useState({});
 
   const filtrarEmpresas = (empresas, filtro) => {
     if (filtro === "Todas") {
@@ -32,15 +33,13 @@ const Empresa = () => {
     axios
       .get("https://coin-backend-production-5d52.up.railway.app/api/empresas")
       .then((response) => {
-        console.log(response.data);
         setEmpresas(response.data);
       })
       .catch((error) => {
         console.error("Houve um erro ao buscar os dados das empresas:", error);
       });
   }, []);
-  console.log(empresas);
-  
+
   const openModal = (empresa = null) => {
     if (empresa) {
       setEditMode(true);
@@ -59,28 +58,30 @@ const Empresa = () => {
       });
     }
     setModalOpen(true);
+    setErrors({});
   };
   
   const closeModal = () => {
     setModalOpen(false);
     setSelectedEmpresa(null);
+    setErrors({});
   };
 
   const formatCNPJ = (value) => {
-    const cleanValue = value.replace(/\D/g, ""); // Remove caracteres não numéricos
+    const cleanValue = value.replace(/\D/g, "");
     return cleanValue
       .replace(/^(\d{2})(\d)/, "$1.$2")
       .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
       .replace(/\.(\d{3})(\d)/, ".$1/$2")
       .replace(/(\d{4})(\d)/, "$1-$2")
-      .slice(0, 18); // Limita a 18 caracteres para o formato correto do CNPJ
+      .slice(0, 18);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({
       ...formValues,
-      [name]: name === "cnpj" ? formatCNPJ(value) : value, // Aplica a formatação para o campo CNPJ
+      [name]: name === "cnpj" ? formatCNPJ(value) : value,
     });
   };
 
@@ -89,12 +90,25 @@ const Empresa = () => {
     return cnpjRegex.test(cnpj);
   };
 
-  const handleSave = () => {
-    if (!isValidCNPJ(formValues.cnpj)) {
-      alert("Por favor, insira um CNPJ no formato XX.XXX.XXX/0001-XX.");
-      return;
+  const validateFields = () => {
+    const errors = {};
+
+    if (!formValues.cnpj) {
+      errors.cnpj = "O CNPJ é obrigatório.";
+    } else if (!isValidCNPJ(formValues.cnpj)) {
+      errors.cnpj = "Por favor, insira um CNPJ no formato XX.XXX.XXX/0001-XX.";
     }
-  
+    if (!formValues.nome.trim()) {
+      errors.nome = "O nome da empresa é obrigatório.";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSave = () => {
+    if (!validateFields()) return;
+
     if (editMode && selectedEmpresa) {
       axios
         .put(
@@ -203,7 +217,6 @@ const Empresa = () => {
         </div>
       </div>
 
-      {/* Modal */}
       {modalOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -219,6 +232,7 @@ const Empresa = () => {
                   value={formValues.cnpj}
                   onChange={handleInputChange}
                 />
+                {errors.cnpj && <span className="error">{errors.cnpj}</span>}
               </div>
               <div>
                 <label>Empresa:</label>
@@ -228,10 +242,12 @@ const Empresa = () => {
                   value={formValues.nome}
                   onChange={handleInputChange}
                 />
+                {errors.nome && <span className="error">{errors.nome}</span>}
               </div>
               <div className="situacaoCadastral">
                 <label>Situação Cadastral:</label>
-                <select className="selectAtiva"
+                <select
+                  className="selectAtiva"
                   name="situacaoCadastral"
                   value={formValues.situacaoCadastral}
                   onChange={handleInputChange}
