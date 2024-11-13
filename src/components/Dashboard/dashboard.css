@@ -1,33 +1,64 @@
-.ContainerEmpresa{
+.ContainerEmpresa {
   display: flex;
+  flex-direction: column; /* Alinhar em coluna para telas menores */
 }
 
-.segundoContainer{
+.segundoContainer {
   margin-top: 10vh;
 }
 
-.chartsContainer{
+.chartsContainer {
   margin-top: 1rem;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  border: 3px solid #004080;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px;
+  background-color: #e0f3ff;
+  flex-wrap: wrap; /* Permite que os gráficos quebrem para a linha de baixo se necessário */
 }
 
-.receitas h2, .despesas h2{
+.receitas h2, .despesas h2 {
   text-align: center;
 }
 
-.receitas h2{
+.receitas h2 {
   color: darkgreen;
 }
 
-.despesas h2{
+.despesas h2 {
   color: darkred;
 }
-.chartsContainer {
-  border: 3px solid #004080; /* Ajuste a cor e a espessura da borda conforme desejado */
-  border-radius: 8px; /* Se quiser cantos arredondados */
-  padding: 20px; /* Para evitar que o conteúdo fique colado na borda */
-  margin: 10px; /* Para criar um espaço ao redor da borda, se necessário */
-  background-color: #e0f3ff; /* Ajuste conforme o fundo desejado */
+
+/* Media Queries para dispositivos menores */
+@media (max-width: 768px) {
+  .chartsContainer {
+    flex-direction: column; /* Coluna para telas pequenas */
+    align-items: center; /* Centraliza os elementos no eixo principal */
+  }
+
+  .ContainerEmpresa {
+    flex-direction: column; /* Coluna para telas pequenas */
+    align-items: center; /* Centraliza os elementos */
+  }
+  
+  /* Ajuste dos gráficos para caber melhor em telas menores */
+  .chartsContainer > div {
+    width: 90%; /* Ajusta a largura dos gráficos em telas menores */
+    margin-bottom: 1rem; /* Espaço entre os gráficos em coluna */
+  }
+}
+
+/* Ajustes para dispositivos médios */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .chartsContainer {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  
+  .chartsContainer > div {
+    width: 45%; /* Ajusta a largura dos gráficos para caber lado a lado */
+  }
 }
