@@ -7,9 +7,6 @@ import './Pagamento.css';
 import { MdEditNote } from "react-icons/md";
 import { MdDeleteForever } from "react-icons/md";
 
-
-
-
 // Configuração do Modal
 Modal.setAppElement('#root');
 
@@ -17,12 +14,13 @@ const Pagamentos = () => {
   const [isReceitas, setIsReceitas] = useState(true);
   const [pagamentos, setPagamentos] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [pagamentoAtual, setPagamentoAtual] = useState(null); // Estado para o pagamento a ser editado
+  const [pagamentoAtual, setPagamentoAtual] = useState(null);
   const [novoPagamento, setNovoPagamento] = useState({
     descricao: '',
     valor: '',
     data: '',
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     loadPagamentos(isReceitas);
@@ -48,10 +46,10 @@ const Pagamentos = () => {
       setNovoPagamento({
         descricao: pagamento.descricao,
         valor: pagamento.valor,
-        data: pagamento.data.split('T')[0], // Certificando-se de que a data esteja no formato correto
+        data: pagamento.data.split('T')[0],
       });
     } else {
-      setPagamentoAtual(null); // Para adição de um novo pagamento
+      setPagamentoAtual(null);
       setNovoPagamento({
         descricao: '',
         valor: '',
@@ -63,7 +61,8 @@ const Pagamentos = () => {
 
   const closeModal = () => {
     setModalIsOpen(false);
-    setPagamentoAtual(null); // Limpa o pagamento atual ao fechar
+    setPagamentoAtual(null);
+    setErrors({});
   };
 
   const handleChange = (e) => {
@@ -74,8 +73,27 @@ const Pagamentos = () => {
     }));
   };
 
+  const validarCampos = () => {
+    const erros = {};
+
+    if (!novoPagamento.descricao.trim()) {
+      erros.descricao = 'A descrição é obrigatória.';
+    }
+    if (isNaN(parseFloat(novoPagamento.valor)) || parseFloat(novoPagamento.valor) <= 0) {
+      erros.valor = 'O valor deve ser um número maior que zero.';
+    }
+    if (!novoPagamento.data) {
+      erros.data = 'A data é obrigatória.';
+    }
+
+    setErrors(erros);
+    return Object.keys(erros).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validarCampos()) return;
+
     try {
       const tipo = isReceitas ? 'RECEITA' : 'DESPESA';
       const pagamento = {
@@ -83,10 +101,8 @@ const Pagamentos = () => {
         tipo,
       };
       if (pagamentoAtual) {
-        // Se estiver editando, faz uma requisição PUT
         await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${pagamentoAtual.id}`, pagamento);
       } else {
-        // Caso contrário, é uma adição de novo pagamento
         await axios.post('https://coin-backend-production-5d52.up.railway.app/api/pagamentos', pagamento);
       }
       loadPagamentos(isReceitas);
@@ -162,6 +178,7 @@ const Pagamentos = () => {
               onChange={handleChange}
               required
             />
+            {errors.descricao && <span className="error">{errors.descricao}</span>}
           </div>
           <div className='form-group'>
             <label htmlFor='valor'>Valor:</label>
@@ -174,6 +191,7 @@ const Pagamentos = () => {
               required
               step="0.01"
             />
+            {errors.valor && <span className="error">{errors.valor}</span>}
           </div>
           <div className='form-group'>
             <label htmlFor='data'>Data:</label>
@@ -185,6 +203,7 @@ const Pagamentos = () => {
               onChange={handleChange}
               required
             />
+            {errors.data && <span className="error">{errors.data}</span>}
           </div>
           <div className='form-actions'>
             <button type='submit' className='submit-button'>{pagamentoAtual ? 'Salvar' : 'Adicionar'}</button>
@@ -215,8 +234,7 @@ const TabelaReceitas = ({ pagamentos, openModal, handleDelete }) => {
             <td>{new Date(pagamento.data).toLocaleDateString('pt-BR')}</td>
             <td>
               <button className='editButton' onClick={() => openModal(pagamento)}><MdEditNote /></button>
-              <button className='deleteButton' onClick={() => handleDelete(pagamento.id)}><MdDeleteForever />
-              </button>
+              <button className='deleteButton' onClick={() => handleDelete(pagamento.id)}><MdDeleteForever /></button>
             </td>
           </tr>
         ))}
@@ -243,10 +261,8 @@ const TabelaDespesas = ({ pagamentos, openModal, handleDelete }) => {
             <td>R$ {pagamento.valor.toFixed(2)}</td>
             <td>{new Date(pagamento.data).toLocaleDateString('pt-BR')}</td>
             <td>
-              <button className='editButton' onClick={() => openModal(pagamento)}><MdEditNote />
-              </button>
-              <button className='deleteButton' onClick={() => handleDelete(pagamento.id)}><MdDeleteForever />
-              </button>
+              <button className='editButton' onClick={() => openModal(pagamento)}><MdEditNote /></button>
+              <button className='deleteButton' onClick={() => handleDelete(pagamento.id)}><MdDeleteForever /></button>
             </td>
           </tr>
         ))}
