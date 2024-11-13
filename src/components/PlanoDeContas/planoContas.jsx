@@ -15,84 +15,88 @@ const AccountPlan = () => {
         valor: '',
         vencimento: ''
     });
+    const [errors, setErrors] = useState({});
     const [isEditMode, setIsEditMode] = useState(false);
     const [currentId, setCurrentId] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Função para buscar contas do backend
     const fetchAccounts = async () => {
         try {
-            setIsLoading(true); // Ativa o loader
+            setIsLoading(true);
             const response = await axios.get('https://coin-backend-production-5d52.up.railway.app/api/planocontas');
-            console.log('Contas recebidas do backend:', response.data); // Verificação
-            setAccounts(response.data); // Atualiza o estado com os dados recebidos
+            setAccounts(response.data);
         } catch (error) {
             console.error('Erro ao buscar contas:', error);
         } finally {
-            setIsLoading(false); // Desativa o loader
+            setIsLoading(false);
         }
     };
 
-    // Chama a função para buscar as contas ao montar o componente
     useEffect(() => {
         fetchAccounts();
     }, []);
 
-    // Filtra as contas por categoria (ignorando maiúsculas/minúsculas)
     const filteredAccounts = accounts.filter(account => 
         selectedCategory === 'Todos' || account.categoria.toLowerCase() === selectedCategory.toLowerCase()
     );
 
-    // Abre o popup para adicionar uma nova conta
     const handleAddAccount = () => {
         setForm({ conta: '', status: '', categoria: '', valor: '', vencimento: '' });
+        setErrors({});
         setIsEditMode(false);
         setIsPopupOpen(true);
     };
 
-    // Abre o popup para editar uma conta existente
     const handleEditAccount = (account) => {
         setForm(account);
         setCurrentId(account.id);
+        setErrors({});
         setIsEditMode(true);
         setIsPopupOpen(true);
     };
 
-    // Exclui uma conta do backend e atualiza a lista
     const handleDeleteAccount = async (id) => {
         try {
             await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/planocontas/${id}`);
-            fetchAccounts(); // Atualiza a lista após deletar
+            fetchAccounts();
         } catch (error) {
             console.error('Erro ao deletar conta:', error);
         }
     };
 
-    // Salva ou atualiza uma conta no backend
+    const validateFields = () => {
+        const errors = {};
+
+        if (!form.conta.trim()) errors.conta = 'A descrição da conta é obrigatória.';
+        if (!form.status.trim()) errors.status = 'O status é obrigatório.';
+        if (!form.categoria.trim()) errors.categoria = 'A categoria é obrigatória.';
+        if (!form.valor || isNaN(parseFloat(form.valor)) || parseFloat(form.valor) <= 0) errors.valor = 'O valor deve ser um número maior que zero.';
+        if (!form.vencimento) errors.vencimento = 'A data de vencimento é obrigatória.';
+
+        setErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
+
     const handleSubmit = async () => {
+        if (!validateFields()) return;
+
         try {
             if (isEditMode) {
                 await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/planocontas/${currentId}`, form);
             } else {
                 await axios.post('https://coin-backend-production-5d52.up.railway.app/api/planocontas', form);
             }
-            fetchAccounts(); // Atualiza a lista após salvar
-            setIsPopupOpen(false); // Fecha o popup
+            fetchAccounts();
+            setIsPopupOpen(false);
         } catch (error) {
             console.error('Erro ao salvar conta:', error);
         }
     };
 
-    // Atualiza o valor do formulário ao mudar os campos
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
-
-    // Exibe uma mensagem de carregamento enquanto os dados são buscados
-    {/* if (isLoading) {
-        return <div className="loading">Carregando...</div>;
-    } */}
 
     return (
         <div className='ContainerGeral'>
@@ -105,7 +109,6 @@ const AccountPlan = () => {
                         <button onClick={handleAddAccount}>+</button>
                     </div>
 
-                    {/* Menu para alternar entre Receitas e Despesas */}
                     <div className="menu">
                         <button
                             className={selectedCategory === 'Receita' ? 'active' : ''}
@@ -165,16 +168,51 @@ const AccountPlan = () => {
                 </section>
             </div>
 
-            {/* Popup para adicionar/editar conta */}
             {isPopupOpen && (
                 <div className="popup-overlay">
                     <div className="popup-content">
                         <h3>{isEditMode ? 'Editar Conta' : 'Adicionar Conta'}</h3>
-                        <input name="conta" value={form.conta} onChange={handleChange} placeholder="Conta" />
-                        <input name="status" value={form.status} onChange={handleChange} placeholder="Status" />
-                        <input name="categoria" value={form.categoria} onChange={handleChange} placeholder="Categoria" />
-                        <input name="valor" value={form.valor} onChange={handleChange} placeholder="Valor" />
-                        <input name="vencimento" value={form.vencimento} onChange={handleChange} placeholder="Vencimento" />
+                        <input
+                            name="conta"
+                            value={form.conta}
+                            onChange={handleChange}
+                            placeholder="Conta"
+                        />
+                        {errors.conta && <span className="error">{errors.conta}</span>}
+                        
+                        <input
+                            name="status"
+                            value={form.status}
+                            onChange={handleChange}
+                            placeholder="Status"
+                        />
+                        {errors.status && <span className="error">{errors.status}</span>}
+                        
+                        <input
+                            name="categoria"
+                            value={form.categoria}
+                            onChange={handleChange}
+                            placeholder="Categoria"
+                        />
+                        {errors.categoria && <span className="error">{errors.categoria}</span>}
+                        
+                        <input
+                            name="valor"
+                            value={form.valor}
+                            onChange={handleChange}
+                            placeholder="Valor"
+                        />
+                        {errors.valor && <span className="error">{errors.valor}</span>}
+                        
+                        <input
+                            name="vencimento"
+                            type="date"
+                            value={form.vencimento}
+                            onChange={handleChange}
+                            placeholder="Vencimento"
+                        />
+                        {errors.vencimento && <span className="error">{errors.vencimento}</span>}
+                        
                         <div className="popup-actions">
                             <button onClick={handleSubmit}>{isEditMode ? 'Atualizar' : 'Salvar'}</button>
                             <button onClick={() => setIsPopupOpen(false)}>Cancelar</button>
