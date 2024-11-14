@@ -8,7 +8,13 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Estado de loading
+  const [isLoading, setIsLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [emailValid, setEmailValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [emailTouched, setEmailTouched] = useState(false); // Novo estado para saber se o campo foi tocado
+  const [passwordTouched, setPasswordTouched] = useState(false); // Novo estado para saber se o campo foi tocado
   const navigate = useNavigate();
 
   // Animação de queda
@@ -18,9 +24,48 @@ function Login() {
     config: { tension: 170, friction: 20 },
   });
 
+  // Função de validação de email
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|br)$/; // Verifica domínios comuns
+    return emailRegex.test(email);
+  };
+
+  // Função de validação da senha
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
+
+  // Função para atualizar e validar o campo de email em tempo real
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    setEmailTouched(true); // Marca que o campo foi tocado
+
+    if (value && !validateEmail(value)) {
+      setEmailValid(false); // Email é inválido
+    } else {
+      setEmailValid(true); // Email é válido ou o campo está vazio
+    }
+  };
+
+  // Função para atualizar e validar o campo de senha em tempo real
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    setPasswordTouched(true); // Marca que o campo foi tocado
+
+    if (value && !validatePassword(value)) {
+      setPasswordValid(false); // Senha é inválida
+      setPasswordError("A senha deve ter pelo menos 6 caracteres.");
+    } else {
+      setPasswordValid(true); // Senha é válida ou o campo está vazio
+      setPasswordError("");
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Inicia o loading
+    setIsLoading(true);
 
     try {
       const response = await axios.post("https://auth-coin-production.up.railway.app/auth/login", {
@@ -28,14 +73,11 @@ function Login() {
         password,
       });
 
-      // Sucesso: redireciona para a URL fornecida pelo backend
       console.log("Login bem-sucedido:", response.data);
 
-      // Armazena o token e redireciona
       localStorage.setItem("token", response.data.token);
       navigate(response.data.redirect_url);
     } catch (error) {
-      // Erros de login
       if (error.response && error.response.status === 401) {
         setError(error.response.data.message);
       } else {
@@ -43,7 +85,7 @@ function Login() {
       }
       console.error("Erro ao fazer login:", error);
     } finally {
-      setIsLoading(false); // Para o loading
+      setIsLoading(false);
     }
   };
 
@@ -69,25 +111,29 @@ function Login() {
           <form className="formm" onSubmit={handleLogin}>
             <div>
               <input
-                className="emailinput"
+                className={`emailinput ${emailTouched && email ? (emailValid ? "input-success" : "input-error") : ""}`}
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
+                onBlur={() => setEmailTouched(true)} // Marca o campo como tocado quando o usuário sai dele
               />
             </div>
             <div>
               <input
+                className={`password-input ${passwordTouched && password ? (passwordValid ? "input-success" : "input-error") : ""}`}
                 type="password"
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
+                onBlur={() => setPasswordTouched(true)} // Marca o campo como tocado quando o usuário sai dele
               />
+              {passwordTouched && passwordError && <div className="error-message">{passwordError}</div>}
             </div>
             {error && <div className="error-message">{error}</div>}
             <button type="submit" disabled={isLoading}>
               {isLoading ? (
-                <div className="spinner"></div> // Spinner de loading
+                <div className="spinner"></div>
               ) : (
                 "Entrar"
               )}
