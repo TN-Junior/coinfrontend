@@ -31,7 +31,7 @@ const Empresa = () => {
 
   useEffect(() => {
     axios
-      .get("https://coin-backend-production-5d52.up.railway.app/api/empresas")
+      .get("https://coin-backend-qrd3.onrender.com/api/empresas")
       .then((response) => {
         setEmpresas(response.data);
       })
@@ -112,7 +112,7 @@ const Empresa = () => {
     if (editMode && selectedEmpresa) {
       axios
         .put(
-          `https://coin-backend-production-5d52.up.railway.app/api/empresas/${selectedEmpresa.id}`,
+          `https://coin-backend-qrd3.onrender.com/api/empresas/${selectedEmpresa.id}`,
           formValues
         )
         .then((response) => {
@@ -128,7 +128,7 @@ const Empresa = () => {
         });
     } else {
       axios
-        .post("https://coin-backend-production-5d52.up.railway.app/api/empresas", formValues)
+        .post("https://coin-backend-qrd3.onrender.com/api/empresas", formValues)
         .then((response) => {
           setEmpresas([...empresas, response.data]);
           closeModal();
@@ -141,7 +141,7 @@ const Empresa = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`https://coin-backend-production-5d52.up.railway.app/api/empresas/${id}`)
+      .delete(`https://coin-backend-qrd3.onrender.com/api/empresas/${id}`)
       .then(() => {
         setEmpresas(empresas.filter((empresa) => empresa.id !== id));
       })

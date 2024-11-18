@@ -68,7 +68,7 @@ function Login() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("https://auth-coin-production.up.railway.app/auth/login", {
+      const response = await axios.post("https://auth-coin.onrender.com/auth/login", {
         email,
         password,
       });
