@@ -3,8 +3,8 @@ import { useRef, useEffect } from "react";
 
 export default function LinePlot({
   data,
-  width = 640,
-  height = 400,
+  width = 480, // Alterado para menor
+  height = 300, // Alterado para menor
   marginTop = 20,
   marginRight = 20,
   marginBottom = 30,
@@ -19,15 +19,15 @@ export default function LinePlot({
   useEffect(() => {
     d3.select(gx.current)
       .call(d3.axisBottom(x))
-      .selectAll("text") // Seleciona os números do eixo X
-      .style("font-size", "16px"); // Define o tamanho da fonte dos números do eixo X
+      .selectAll("text")
+      .style("font-size", "12px"); // Reduz tamanho da fonte
   }, [gx, x]);
 
   useEffect(() => {
     d3.select(gy.current)
       .call(d3.axisLeft(y))
-      .selectAll("text") // Seleciona os números do eixo Y
-      .style("font-size", "16px"); // Define o tamanho da fonte dos números do eixo Y
+      .selectAll("text")
+      .style("font-size", "12px"); // Reduz tamanho da fonte
   }, [gy, y]);
 
   return (
