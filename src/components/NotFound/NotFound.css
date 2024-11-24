@@ -1,0 +1,29 @@
+.not-found {
+  text-align: center;
+  padding: 50px;
+}
+
+.not-found h1 {
+  font-size: 3rem;
+  color: #223578;
+}
+
+.not-found p {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.go-back {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.go-back:hover {
+  background-color: #0056b3;
+}
