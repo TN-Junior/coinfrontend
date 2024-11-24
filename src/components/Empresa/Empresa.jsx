@@ -20,9 +20,7 @@ const Empresa = () => {
   const [errors, setErrors] = useState({});
 
   const filtrarEmpresas = (empresas, filtro) => {
-    if (filtro === "Todas") {
-      return empresas;
-    }
+    if (filtro === "Todas") return empresas;
     return empresas.filter(
       (empresa) =>
         empresa.situacaoCadastral.toLowerCase() === filtro.toLowerCase()
@@ -32,12 +30,8 @@ const Empresa = () => {
   useEffect(() => {
     axios
       .get("https://coin-backend-qrd3.onrender.com/api/empresas")
-      .then((response) => {
-        setEmpresas(response.data);
-      })
-      .catch((error) => {
-        console.error("Houve um erro ao buscar os dados das empresas:", error);
-      });
+      .then((response) => setEmpresas(response.data))
+      .catch((error) => console.error("Erro ao buscar dados:", error));
   }, []);
 
   const openModal = (empresa = null) => {
@@ -54,13 +48,13 @@ const Empresa = () => {
       setFormValues({
         cnpj: "",
         nome: "",
-        situacaoCadastral: "Ativa", 
+        situacaoCadastral: "Ativa",
       });
     }
     setModalOpen(true);
     setErrors({});
   };
-  
+
   const closeModal = () => {
     setModalOpen(false);
     setSelectedEmpresa(null);
@@ -85,30 +79,22 @@ const Empresa = () => {
     });
   };
 
-  const isValidCNPJ = (cnpj) => {
-    const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
-    return cnpjRegex.test(cnpj);
-  };
-
   const validateFields = () => {
     const errors = {};
-
     if (!formValues.cnpj) {
       errors.cnpj = "O CNPJ é obrigatório.";
-    } else if (!isValidCNPJ(formValues.cnpj)) {
-      errors.cnpj = "Por favor, insira um CNPJ no formato XX.XXX.XXX/0001-XX.";
+    } else if (!/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(formValues.cnpj)) {
+      errors.cnpj = "CNPJ inválido. Use o formato XX.XXX.XXX/XXXX-XX.";
     }
     if (!formValues.nome.trim()) {
       errors.nome = "O nome da empresa é obrigatório.";
     }
-
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleSave = () => {
     if (!validateFields()) return;
-
     if (editMode && selectedEmpresa) {
       axios
         .put(
@@ -123,9 +109,7 @@ const Empresa = () => {
           );
           closeModal();
         })
-        .catch((error) => {
-          console.error("Erro ao editar a empresa:", error);
-        });
+        .catch((error) => console.error("Erro ao editar:", error));
     } else {
       axios
         .post("https://coin-backend-qrd3.onrender.com/api/empresas", formValues)
@@ -133,21 +117,15 @@ const Empresa = () => {
           setEmpresas([...empresas, response.data]);
           closeModal();
         })
-        .catch((error) => {
-          console.error("Erro ao criar a empresa:", error);
-        });
+        .catch((error) => console.error("Erro ao criar:", error));
     }
   };
 
   const handleDelete = (id) => {
     axios
       .delete(`https://coin-backend-qrd3.onrender.com/api/empresas/${id}`)
-      .then(() => {
-        setEmpresas(empresas.filter((empresa) => empresa.id !== id));
-      })
-      .catch((error) => {
-        console.error("Erro ao excluir a empresa:", error);
-      });
+      .then(() => setEmpresas(empresas.filter((emp) => emp.id !== id)))
+      .catch((error) => console.error("Erro ao excluir:", error));
   };
 
   return (
@@ -174,49 +152,50 @@ const Empresa = () => {
                 Adicionar Empresa
               </button>
             </div>
-            <table className="styled-table">
-              <thead>
-                <tr>
-                  <th>CNPJ</th>
-                  <th>Empresa</th>
-                  <th>Situação Cadastral</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtrarEmpresas(empresas, filtroSituacao).length > 0 ? (
-                  filtrarEmpresas(empresas, filtroSituacao).map((empresa) => (
-                    <tr key={empresa.id}>
-                      <td>{empresa.cnpj}</td>
-                      <td>{empresa.nome}</td>
-                      <td>{empresa.situacaoCadastral}</td>
-                      <td>
-                        <button
-                          className="editButton"
-                          onClick={() => openModal(empresa)}
-                        >
-                          <MdEditNote />
-                        </button>
-                        <button
-                          className="deleteButton"
-                          onClick={() => handleDelete(empresa.id)}
-                        >
-                          <MdDeleteForever />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
+            <div className="table-container">
+              <table className="styled-table">
+                <thead>
                   <tr>
-                    <td colSpan="4">Nenhuma empresa disponível.</td>
+                    <th>CNPJ</th>
+                    <th>Empresa</th>
+                    <th>Situação Cadastral</th>
+                    <th>Ações</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filtrarEmpresas(empresas, filtroSituacao).length > 0 ? (
+                    filtrarEmpresas(empresas, filtroSituacao).map((empresa) => (
+                      <tr key={empresa.id}>
+                        <td>{empresa.cnpj}</td>
+                        <td>{empresa.nome}</td>
+                        <td>{empresa.situacaoCadastral}</td>
+                        <td>
+                          <button
+                            className="editButton"
+                            onClick={() => openModal(empresa)}
+                          >
+                            <MdEditNote />
+                          </button>
+                          <button
+                            className="deleteButton"
+                            onClick={() => handleDelete(empresa.id)}
+                          >
+                            <MdDeleteForever />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4">Nenhuma empresa disponível.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-
       {modalOpen && (
         <div className="modal">
           <div className="modal-content">

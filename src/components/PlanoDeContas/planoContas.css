@@ -12,7 +12,6 @@
   margin-left: 1rem;
   padding: 2rem;
   flex-grow: 1;
-
 }
 
 .ContainerGeral {
@@ -21,7 +20,6 @@
 }
 
 .plan-section {
- 
   padding: 1rem;
   background-color: #ffffff; /* Fundo branco para diferenciar do Container principal */
   border-radius: 8px;
@@ -36,7 +34,7 @@
   margin-bottom: 1.5rem;
 }
 
-.text-button > h2{
+.text-button > h2 {
   color: #006ac0;
   font-weight: 900;
   font-size: 3rem;
@@ -108,11 +106,13 @@
   cursor: pointer;
 }
 
+/* Configuração de barra de rolagem para tabela */
 .table-content {
   width: 100%;
   margin-top: 2rem;
   border-radius: 8px;
-  overflow: hidden; /* Garante que a borda seja aplicada corretamente */
+  overflow-y: auto; /* Adiciona rolagem vertical */
+  max-height: 50vh; /* Limita a altura máxima da tabela */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adiciona sombra para destacar a tabela */
 }
 
@@ -121,7 +121,8 @@
   border-collapse: collapse;
 }
 
-.table-content table th, .table-content table td {
+.table-content table th,
+.table-content table td {
   padding: 15px;
   text-align: left;
 }
@@ -131,6 +132,9 @@
   color: #ffffff;
   text-transform: uppercase;
   font-weight: 700;
+  position: sticky; /* Cabeçalho fixo ao rolar */
+  top: 0;
+  z-index: 1;
 }
 
 .table-content table td {
@@ -157,7 +161,9 @@
   font-weight: 700;
 }
 
-.status.agendada::before, .status.paga::before, .status.vencida::before {
+.status.agendada::before,
+.status.paga::before,
+.status.vencida::before {
   content: "● ";
   font-size: 1rem;
   margin-right: 5px;
@@ -174,6 +180,8 @@
 .status.vencida::before {
   color: #903f3f;
 }
+
+/* Popup overlay */
 .popup-overlay {
   position: fixed;
   top: 0;

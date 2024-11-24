@@ -1,24 +1,32 @@
-
-.ContainerEmpresa{
+.ContainerEmpresa {
   flex-direction: column;
   height: 100vh;
-    display: flex;
+  display: flex;
   box-sizing: border-box;
 }
 
-.segundoContainer{
+.segundoContainer {
   margin-top: 10vh;
   display: flex;
   flex: 1;
-
 }
-.content{
+
+.content {
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 2rem;
   background-color: #f0f0f5;
 }
+
+/* Adicionando barra de rolagem para a tabela */
+.table-container {
+  max-height: 60vh; /* Define a altura máxima da tabela */
+  overflow-y: auto; /* Habilita rolagem vertical */
+  overflow-x: hidden; /* Esconde a rolagem horizontal */
+  margin-top: 20px;
+}
+
 .styled-table {
   width: 100%;
   border-collapse: collapse;
@@ -35,13 +43,12 @@
   font-weight: bold;
 }
 
-.styled-table th, .styled-table td {
+.styled-table th, 
+.styled-table td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #dddddd;
 }
-
-
 
 .styled-table tbody tr:hover {
   background-color: #f1f1f1;
@@ -55,13 +62,13 @@
   color: #333;
 }
 
-.miniHeader{
+.miniHeader {
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
 
-.miniHeader h2{
+.miniHeader h2 {
   font-size: 3rem;
   color: #006dc0;
   font-weight: 800;
@@ -76,12 +83,12 @@
   border-width: 1px;
 }
 
-.titleAddEdit{
+.titleAddEdit {
   text-align: center;
-  color: #006dc0!important;
+  color: #006dc0 !important;
 }
 
-.cancelarBtn{
+.cancelarBtn {
   background-color: #f44336;
   color: white;
   border: none;
@@ -89,27 +96,27 @@
   cursor: pointer;
 }
 
-.addBtn{
+.addBtn {
   margin-left: 9px;
 }
 
-.form-actions{
+.form-actions {
   display: flex;
-  justify-content: space-between!important;
+  justify-content: space-between !important;
 }
 
-.filter{
+.filter {
   padding: 10px 20px;
   border-color: #006dc0;
   border-width: 1px;
   border-radius: 10px;
 }
 
-.selectAtiva{
+.selectAtiva {
   padding: 4px 10px;
   margin-left: 10px;
 }
 
-.situacaoCadastral{
+.situacaoCadastral {
   margin-bottom: 8px;
 }

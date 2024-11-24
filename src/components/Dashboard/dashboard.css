@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Remove a barra de rolagem */
+  overflow: hidden; /* Remove a barra de rolagem vertical */
   width: 100%;
   height: 100%;
 }
@@ -9,13 +9,13 @@ html, body {
 .ContainerEmpresa {
   display: flex;
   flex-direction: column;
-  width: 100%; /* Garante que o conteúdo se ajuste à largura da página */
-  height: 100%; /* Garante que o conteúdo se ajuste à altura da página */
+  width: 100%;
+  height: 100%;
 }
 
 .segundoContainer {
   margin-top: 10vh;
-  overflow: hidden; /* Remove qualquer conteúdo excedente */
+  overflow: hidden;
 }
 
 .chartsContainer {
@@ -28,8 +28,20 @@ html, body {
   padding: 20px;
   margin: 10px;
   background-color: #e0f3ff;
-  flex-wrap: wrap;
-  overflow: hidden; /* Remove excedente dentro do contêiner */
+  flex-wrap: nowrap; /* Impede que os itens quebrem linha */
+  overflow-x: auto; /* Adiciona a barra de rolagem horizontal */
+}
+
+.chartsContainer > div {
+  flex: 1 1 45%; /* Adapta a largura dos gráficos proporcionalmente */
+  min-width: 300px; /* Define uma largura mínima para os gráficos */
+  max-width: 45%; /* Define uma largura máxima para gráficos maiores */
+  margin-right: 1rem;
+  box-sizing: border-box;
+}
+
+.chartsContainer > div:last-child {
+  margin-right: 0; /* Remove margem do último item */
 }
 
 .receitas h2, .despesas h2 {
@@ -47,24 +59,23 @@ html, body {
 /* Media Queries para dispositivos menores */
 @media (max-width: 768px) {
   .chartsContainer {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column; /* Empilha os gráficos em telas menores */
+    justify-content: flex-start; /* Alinha os gráficos ao topo */
   }
 
   .chartsContainer > div {
-    width: 90%;
-    margin-bottom: 1rem;
+    width: 100%; /* Os gráficos ocupam toda a largura disponível */
+    margin-right: 0; /* Remove a margem lateral */
+    margin-bottom: 1rem; /* Adiciona espaço entre os gráficos empilhados */
+  }
+
+  .chartsContainer > div:last-child {
+    margin-bottom: 0; /* Remove margem do último gráfico */
   }
 }
 
-/* Ajustes para dispositivos médios */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .chartsContainer {
-    flex-direction: row;
-    justify-content: space-around;
-  }
-
+@media (max-width: 480px) {
   .chartsContainer > div {
-    width: 45%;
+    min-width: 250px; /* Reduz ainda mais a largura mínima para telas pequenas */
   }
 }
