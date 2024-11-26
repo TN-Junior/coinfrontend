@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSpring, animated } from "@react-spring/web";
 import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
 import "./login.css";
 
 function Login() {
@@ -13,8 +14,9 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
-  const [emailTouched, setEmailTouched] = useState(false); // Novo estado para saber se o campo foi tocado
-  const [passwordTouched, setPasswordTouched] = useState(false); // Novo estado para saber se o campo foi tocado
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(""); // Armazena o token do reCAPTCHA
   const navigate = useNavigate();
 
   // Animação de queda
@@ -26,7 +28,7 @@ function Login() {
 
   // Função de validação de email
   const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|br)$/; // Verifica domínios comuns
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|org|edu|gov|br)$/;
     return emailRegex.test(email);
   };
 
@@ -35,42 +37,41 @@ function Login() {
     return password.length >= 6;
   };
 
-  // Função para atualizar e validar o campo de email em tempo real
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    setEmailTouched(true); // Marca que o campo foi tocado
-
-    if (value && !validateEmail(value)) {
-      setEmailValid(false); // Email é inválido
-    } else {
-      setEmailValid(true); // Email é válido ou o campo está vazio
-    }
+    setEmailTouched(true);
+    setEmailValid(value ? validateEmail(value) : true);
   };
 
-  // Função para atualizar e validar o campo de senha em tempo real
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-    setPasswordTouched(true); // Marca que o campo foi tocado
+    setPasswordTouched(true);
+    setPasswordValid(value ? validatePassword(value) : true);
+  };
 
-    if (value && !validatePassword(value)) {
-      setPasswordValid(false); // Senha é inválida
-      setPasswordError("A senha deve ter pelo menos 6 caracteres.");
-    } else {
-      setPasswordValid(true); // Senha é válida ou o campo está vazio
-      setPasswordError("");
-    }
+  // Atualiza o token do reCAPTCHA
+  const onCaptchaChange = (token) => {
+    setCaptchaToken(token);
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
+
+    if (!captchaToken) {
+      setError("Por favor, complete o reCAPTCHA.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      const response = await axios.post("https://auth-coin.onrender.com/auth/login", {
+      const response = await axios.post("http://127.0.0.1:5000/auth/login", {
         email,
         password,
+        captchaToken, // Inclui o token do reCAPTCHA no payload
       });
 
       console.log("Login bem-sucedido:", response.data);
@@ -116,7 +117,7 @@ function Login() {
                 placeholder="Email"
                 value={email}
                 onChange={handleEmailChange}
-                onBlur={() => setEmailTouched(true)} // Marca o campo como tocado quando o usuário sai dele
+                onBlur={() => setEmailTouched(true)}
               />
             </div>
             <div>
@@ -126,10 +127,14 @@ function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={handlePasswordChange}
-                onBlur={() => setPasswordTouched(true)} // Marca o campo como tocado quando o usuário sai dele
+                onBlur={() => setPasswordTouched(true)}
               />
               {passwordTouched && passwordError && <div className="error-message">{passwordError}</div>}
             </div>
+            <ReCAPTCHA
+              sitekey="6LdulYoqAAAAABq5ooeOwpdsvho9GiE34fBgUktQ" // Chave do site
+              onChange={onCaptchaChange}
+            />
             {error && <div className="error-message">{error}</div>}
             <button type="submit" disabled={isLoading}>
               {isLoading ? (
