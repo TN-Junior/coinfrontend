@@ -11,7 +11,7 @@ const Sidebar = () => {
 
         try {
             // Chamar o backend para invalidar o token (opcional)
-            await fetch('http://localhost:5000/logout', {
+            await fetch('https://auth-coinn2-0.onrender.com/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
