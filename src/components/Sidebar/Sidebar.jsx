@@ -1,9 +1,35 @@
 import React from 'react';
 import './Sidebar.css';
-import Header from "../Header/Header"
-import { Link } from 'react-router-dom';
+import Header from "../Header/Header";
+import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        const token = localStorage.getItem('token'); // Ou sessionStorage.getItem('token')
+
+        try {
+            // Chamar o backend para invalidar o token (opcional)
+            await fetch('http://localhost:5000/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            // Remover o token do localStorage
+            localStorage.removeItem('token');
+
+            // Redirecionar para a tela de login
+            navigate('/');
+        } catch (error) {
+            console.error('Erro ao deslogar:', error);
+            alert('Erro ao deslogar. Tente novamente.');
+        }
+    };
+
     return (
         <div className='sidebar-content'>
             <aside className='sidebar'>
@@ -19,16 +45,11 @@ const Sidebar = () => {
                         <li><Link to="/Empresa">Empresas</Link></li>
                         <li className="active"><a className='activeA' href="/plano">Plano de Contas</a></li>
                         
-                        <li><a href="/">Sair</a></li>
-                        
+                        <li><a onClick={handleLogout} style={{ cursor: 'pointer' }}>Sair</a></li>
                     </ul>
                 </nav>
             </aside>
-
-            
-            
         </div>
-
     );
 };
 
