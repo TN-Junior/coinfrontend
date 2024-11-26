@@ -5,8 +5,12 @@ import './NotFound.css';
 const NotFound = () => {
     return (
         <div className="not-found">
-            <h1>404 - Página Não Encontrada</h1>
-            <p>Desculpe, a página que você está procurando não existe.</p>
+            <img 
+                src="src/assets/erro!.png" 
+                alt="Erro 404 - Página não encontrada" 
+                className="not-found-image" 
+            />
+
             <Link to="/Dashboard" className="go-back">Voltar ao Dashboard</Link>
         </div>
     );
