@@ -68,7 +68,7 @@ function Login() {
     }
 
     try {
-      const response = await axios.post("http://127.0.0.1:5000/auth/login", {
+      const response = await axios.post("https://auth-coinn2-0.onrender.com/auth/login", {
         email,
         password,
         captchaToken, // Inclui o token do reCAPTCHA no payload
