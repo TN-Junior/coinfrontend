@@ -8,20 +8,22 @@ const Sidebar = () => {
 
     const handleLogout = async () => {
         const token = localStorage.getItem('token'); // Ou sessionStorage.getItem('token')
-
+    
         try {
             // Chamar o backend para invalidar o token (opcional)
-            await fetch('https://auth-coinn2-0.onrender.com/logout', {
+            await fetch('https://auth-coinn20-production.up.railway.app/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
             });
-
-            // Remover o token do localStorage
+    
+            // Limpar localStorage e sessionStorage
             localStorage.removeItem('token');
-
+            sessionStorage.removeItem('isLogged');
+            sessionStorage.removeItem('userType');
+    
             // Redirecionar para a tela de login
             navigate('/');
         } catch (error) {
@@ -29,6 +31,7 @@ const Sidebar = () => {
             alert('Erro ao deslogar. Tente novamente.');
         }
     };
+    
 
     return (
         <div className='sidebar-content'>
