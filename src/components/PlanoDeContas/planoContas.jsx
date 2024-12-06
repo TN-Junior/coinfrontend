@@ -46,6 +46,12 @@ const AccountPlan = () => {
       account.categoria.toLowerCase() === selectedCategory.toLowerCase()
   );
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split("-");
+    return `${day}/${month}/${year}`;
+  };
+
   const handleAddAccount = () => {
     setForm({
       conta: "",
@@ -190,7 +196,7 @@ const AccountPlan = () => {
                       </td>
                       <td>{account.categoria}</td>
                       <td>{account.valor}</td>
-                      <td>{account.vencimento}</td>
+                      <td>{formatDate(account.vencimento)}</td>
                       <td>
                         <button onClick={() => handleEditAccount(account)}>
                           Editar

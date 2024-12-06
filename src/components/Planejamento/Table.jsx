@@ -64,6 +64,12 @@ function Table() {
     return numberValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }).replace("R$", "");
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const validarCampos = () => {
     const erros = {};
 
@@ -287,8 +293,8 @@ function Table() {
                 <td>{conta.status}</td>
                 <td>{conta.categoria}</td>
                 <td>{`R$ ${parseFloat(conta.valor).toFixed(2)}`}</td>
-                <td>{conta.vencimento}</td>
-                <td>{conta.pagamento}</td>
+                <td>{formatDate(conta.vencimento)}</td>
+                <td>{formatDate(conta.pagamento)}</td>
               </tr>
             ))}
           </tbody>

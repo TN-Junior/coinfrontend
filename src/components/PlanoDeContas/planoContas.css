@@ -161,9 +161,15 @@
   font-weight: 700;
 }
 
+.status.pendente {
+  color: #ff8c00; /* Cor laranja para o status pendente */
+  font-weight: 700;
+}
+
 .status.agendada::before,
 .status.paga::before,
-.status.vencida::before {
+.status.vencida::before,
+.status.pendente::before {
   content: "● ";
   font-size: 1rem;
   margin-right: 5px;
@@ -180,6 +186,11 @@
 .status.vencida::before {
   color: #903f3f;
 }
+
+.status.pendente::before {
+  color: #ff8c00; /* Cor laranja para o ícone do status pendente */
+}
+
 
 /* Popup overlay */
 .popup-overlay {
