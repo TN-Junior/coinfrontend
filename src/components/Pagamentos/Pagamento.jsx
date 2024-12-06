@@ -14,7 +14,9 @@ const Pagamentos = () => {
   const [isReceitas, setIsReceitas] = useState(true);
   const [pagamentos, setPagamentos] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [pagamentoAtual, setPagamentoAtual] = useState(null);
+  const [pagamentoParaDeletar, setPagamentoParaDeletar] = useState(null);
   const [novoPagamento, setNovoPagamento] = useState({
     descricao: '',
     valor: '',
@@ -65,6 +67,16 @@ const Pagamentos = () => {
     setErrors({});
   };
 
+  const openDeleteModal = (pagamento) => {
+    setPagamentoParaDeletar(pagamento);
+    setDeleteModalIsOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalIsOpen(false);
+    setPagamentoParaDeletar(null);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNovoPagamento((prevState) => ({
@@ -112,10 +124,11 @@ const Pagamentos = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const confirmarDelecao = async () => {
     try {
-      await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${id}`);
+      await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${pagamentoParaDeletar.id}`);
       loadPagamentos(isReceitas);
+      closeDeleteModal();
     } catch (error) {
       console.error('Erro ao excluir pagamento:', error);
     }
@@ -148,9 +161,9 @@ const Pagamentos = () => {
 
             <div className='table-container'>
               {isReceitas ? (
-                <TabelaReceitas pagamentos={pagamentos} openModal={openModal} handleDelete={handleDelete} />
+                <TabelaReceitas pagamentos={pagamentos} openModal={openModal} openDeleteModal={openDeleteModal} />
               ) : (
-                <TabelaDespesas pagamentos={pagamentos} openModal={openModal} handleDelete={handleDelete} />
+                <TabelaDespesas pagamentos={pagamentos} openModal={openModal} openDeleteModal={openDeleteModal} />
               )}
             </div>
           </div>
@@ -167,13 +180,12 @@ const Pagamentos = () => {
       >
         <h2>{pagamentoAtual ? 'Editar Pagamento' : 'Adicionar Pagamento'}</h2>
         <form onSubmit={handleSubmit} className='form-pagamento'>
-          <div className='form-group1'>
+          <div className='form-group'>
             <label htmlFor='descricao'>Descrição:</label>
             <input
               type='text'
               id='descricao'
               name='descricao'
-              className='inputDescricao'
               value={novoPagamento.descricao}
               onChange={handleChange}
               required
@@ -211,11 +223,27 @@ const Pagamentos = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Modal de confirmação de exclusão */}
+      <Modal
+        isOpen={deleteModalIsOpen}
+        onRequestClose={closeDeleteModal}
+        contentLabel="Confirmação"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <h2>Confirmação</h2>
+        <p>Tem certeza que deseja deletar o pagamento "{pagamentoParaDeletar?.descricao}"?</p>
+        <div className="modal-actions">
+          <button className="delete-button" onClick={confirmarDelecao}>Sim</button>
+          <button className="cancel-button" onClick={closeDeleteModal}>Não</button>
+        </div>
+      </Modal>
     </>
   );
 };
 
-const TabelaReceitas = ({ pagamentos, openModal, handleDelete }) => {
+const TabelaReceitas = ({ pagamentos, openModal, openDeleteModal }) => {
   return (
     <table className='styled-table'>
       <thead>
@@ -234,7 +262,7 @@ const TabelaReceitas = ({ pagamentos, openModal, handleDelete }) => {
             <td>{new Date(pagamento.data).toLocaleDateString('pt-BR')}</td>
             <td>
               <button className='editButton' onClick={() => openModal(pagamento)}><MdEditNote /></button>
-              <button className='deleteButton' onClick={() => handleDelete(pagamento.id)}><MdDeleteForever /></button>
+              <button className='deleteButton' onClick={() => openDeleteModal(pagamento)}><MdDeleteForever /></button>
             </td>
           </tr>
         ))}
@@ -243,15 +271,15 @@ const TabelaReceitas = ({ pagamentos, openModal, handleDelete }) => {
   );
 };
 
-const TabelaDespesas = ({ pagamentos, openModal, handleDelete }) => {
+const TabelaDespesas = ({ pagamentos, openModal, openDeleteModal }) => {
   return (
     <table className='styled-table'>
       <thead>
-        <tr className='trpai'>
+        <tr>
           <th>Descrição</th>
           <th>Valor</th>
           <th>Data</th>
-          <th className='th4'>Ações</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -262,7 +290,7 @@ const TabelaDespesas = ({ pagamentos, openModal, handleDelete }) => {
             <td>{new Date(pagamento.data).toLocaleDateString('pt-BR')}</td>
             <td>
               <button className='editButton' onClick={() => openModal(pagamento)}><MdEditNote /></button>
-              <button className='deleteButton' onClick={() => handleDelete(pagamento.id)}><MdDeleteForever /></button>
+              <button className='deleteButton' onClick={() => openDeleteModal(pagamento)}><MdDeleteForever /></button>
             </td>
           </tr>
         ))}

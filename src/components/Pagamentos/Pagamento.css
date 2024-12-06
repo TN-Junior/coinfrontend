@@ -1,5 +1,6 @@
 /* Pagamento.css */
 
+/* Container Principal */
 .ContainerEmpresa {
   display: flex;
   flex-direction: column;
@@ -19,6 +20,7 @@
   background-color: #f0f0f5;
 }
 
+/* Toggle Container */
 .toggle-container {
   margin-bottom: 1rem;
   font-size: 1.2rem;
@@ -50,7 +52,7 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  transition: .4s;
+  transition: 0.4s;
   border-radius: 34px;
 }
 
@@ -62,7 +64,7 @@
   left: 4px;
   bottom: 2.5px;
   background-color: white;
-  transition: .4s;
+  transition: 0.4s;
   border-radius: 50%;
 }
 
@@ -91,13 +93,12 @@ input:checked + .slider:before {
   font-weight: bold;
 }
 
-.styled-table th, .styled-table td {
+.styled-table th,
+.styled-table td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #dddddd;
 }
-
-
 
 .styled-table tbody tr:hover {
   background-color: #f1f1f1;
@@ -111,29 +112,40 @@ input:checked + .slider:before {
   color: #333;
 }
 
-.toggle-add-container{
+/* Botões */
+.toggle-add-container {
   display: flex;
-  align-content: center;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.add-button{
+.add-button {
   width: 10rem;
   margin-bottom: 16px;
- 
+  background-color: #006dc0;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
 }
+
+.add-button:hover {
+  background-color: #005bb5;
+}
+
+/* Modal */
 .modal {
   position: absolute;
   top: 50%;
   left: 50%;
-  right: auto;
-  bottom: auto;
   transform: translate(-50%, -50%);
   background: white;
   padding: 40px;
   border-radius: 8px;
   width: 400px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .overlay {
@@ -142,9 +154,10 @@ input:checked + .slider:before {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* Formulário */
 .form-pagamento {
   display: flex;
   flex-direction: column;
@@ -157,27 +170,39 @@ input:checked + .slider:before {
 .form-group label {
   margin-bottom: 5px;
   display: block;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .form-group input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
+.form-group input:focus {
+  border-color: #006dc0;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 109, 192, 0.5);
+}
+
+/* Ações do Formulário */
 .form-actions {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
 }
 
 .submit-button {
   padding: 10px 20px;
-  background-color: #2196F3;
+  background-color: #2196f3;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-right: 10px;
 }
 
 .submit-button:hover {
@@ -197,32 +222,45 @@ input:checked + .slider:before {
   background-color: #da190b;
 }
 
-.form-group1 input{
-  border: black solid 1px;
+/* Estilo Específico para o Campo de Descrição */
+#descricao {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
-#descricao{
-  margin-left: 1px;
-  width: 20rem;
+#descricao:focus {
+  border-color: #006dc0;
+  outline: none;
 }
 
-.modal h2{
+/* Títulos do Modal */
+.modal h2 {
   font-weight: 800;
   color: black;
   font-size: 1.3rem;
   margin-bottom: 1.2rem;
 }
 
-.deleteButton, .editButton{
-  background: white!important;
-  font-size: 25px;
+/* Botões de Ações */
+.deleteButton,
+.editButton {
+  background: white !important;
+  font-size: 20px;
   color: black;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
-
+  border: none;
+  cursor: pointer;
 }
 
-.editButton{
+.editButton {
   margin-right: 10px;
 }
 
-
+.deleteButton:hover,
+.editButton:hover {
+  background-color: #f1f1f1;
+}

@@ -9,8 +9,10 @@ import { MdDeleteForever } from "react-icons/md";
 const Empresa = () => {
   const [empresas, setEmpresas] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [selectedEmpresa, setSelectedEmpresa] = useState(null);
+  const [empresaParaDeletar, setEmpresaParaDeletar] = useState(null);
   const [filtroSituacao, setFiltroSituacao] = useState("Todas");
   const [formValues, setFormValues] = useState({
     cnpj: "",
@@ -59,6 +61,16 @@ const Empresa = () => {
     setModalOpen(false);
     setSelectedEmpresa(null);
     setErrors({});
+  };
+
+  const openDeleteModal = (empresa) => {
+    setEmpresaParaDeletar(empresa);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setEmpresaParaDeletar(null);
   };
 
   const formatCNPJ = (value) => {
@@ -121,10 +133,15 @@ const Empresa = () => {
     }
   };
 
-  const handleDelete = (id) => {
+  const confirmarDelecao = () => {
     axios
-      .delete(`https://coin-backend-production-5d52.up.railway.app/api/empresas/${id}`)
-      .then(() => setEmpresas(empresas.filter((emp) => emp.id !== id)))
+      .delete(
+        `https://coin-backend-production-5d52.up.railway.app/api/empresas/${empresaParaDeletar.id}`
+      )
+      .then(() => {
+        setEmpresas(empresas.filter((emp) => emp.id !== empresaParaDeletar.id));
+        closeDeleteModal();
+      })
       .catch((error) => console.error("Erro ao excluir:", error));
   };
 
@@ -178,7 +195,7 @@ const Empresa = () => {
                           </button>
                           <button
                             className="deleteButton"
-                            onClick={() => handleDelete(empresa.id)}
+                            onClick={() => openDeleteModal(empresa)}
                           >
                             <MdDeleteForever />
                           </button>
@@ -196,6 +213,8 @@ const Empresa = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal para Adicionar/Editar Empresa */}
       {modalOpen && (
         <div className="modal">
           <div className="modal-content">
@@ -248,6 +267,24 @@ const Empresa = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação de Exclusão */}
+      {deleteModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Confirmação</h2>
+            <p>Tem certeza que deseja excluir a empresa "{empresaParaDeletar?.nome}"?</p>
+            <div className="modal-actions">
+              <button className="delete-button" onClick={confirmarDelecao}>
+                Sim
+              </button>
+              <button className="cancel-button" onClick={closeDeleteModal}>
+                Não
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -20,6 +20,7 @@ function Table() {
   const [editId, setEditId] = useState(null);
   const [contaSelecionada, setContaSelecionada] = useState(null);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('Todas');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     carregarContas();
@@ -29,7 +30,6 @@ function Table() {
     try {
       const response = await axios.get('https://coin-backend-production-5d52.up.railway.app/api/contas');
       setContas(response.data);
-      console.log('Contas carregadas:', response.data);
     } catch (error) {
       console.error('Erro ao carregar contas:', error);
     }
@@ -130,6 +130,15 @@ function Table() {
     setEditId(conta.id);
     setIsEditing(true);
     setShowModal(true);
+  };
+
+  const confirmarDelecao = () => {
+    deletarConta(contaSelecionada.id);
+    setShowDeleteConfirm(false);
+  };
+
+  const cancelarDelecao = () => {
+    setShowDeleteConfirm(false);
   };
 
   const deletarConta = async (id) => {
@@ -246,6 +255,19 @@ function Table() {
         </div>
       )}
 
+      {showDeleteConfirm && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Confirmação</h3>
+            <p>Tem certeza que deseja deletar esta conta?</p>
+            <div className="modal-actions">
+              <button className="delete-button" onClick={confirmarDelecao}>Sim</button>
+              <button className="cancel-button" onClick={cancelarDelecao}>Não</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="table-container">
         <table className="empresa-table">
           <thead>
@@ -278,7 +300,7 @@ function Table() {
           <button className="edit-button" onClick={() => editarConta(contaSelecionada)}>
             <FontAwesomeIcon icon={faEdit} /> Editar
           </button>
-          <button className="delete-button" onClick={() => deletarConta(contaSelecionada.id)}>
+          <button className="delete-button" onClick={() => setShowDeleteConfirm(true)}>
             <FontAwesomeIcon icon={faTrash} /> Deletar
           </button>
         </div>

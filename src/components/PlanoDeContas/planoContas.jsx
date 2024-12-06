@@ -8,6 +8,7 @@ const AccountPlan = () => {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [accounts, setAccounts] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [form, setForm] = useState({
     conta: "",
     status: "",
@@ -18,6 +19,7 @@ const AccountPlan = () => {
   const [errors, setErrors] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentId, setCurrentId] = useState(null);
+  const [accountToDelete, setAccountToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchAccounts = async () => {
@@ -65,12 +67,23 @@ const AccountPlan = () => {
     setIsPopupOpen(true);
   };
 
-  const handleDeleteAccount = async (id) => {
+  const openDeletePopup = (account) => {
+    setAccountToDelete(account);
+    setIsDeletePopupOpen(true);
+  };
+
+  const closeDeletePopup = () => {
+    setAccountToDelete(null);
+    setIsDeletePopupOpen(false);
+  };
+
+  const confirmDeleteAccount = async () => {
     try {
       await axios.delete(
-        `https://coin-backend-production-5d52.up.railway.app/api/planocontas/${id}`
+        `https://coin-backend-production-5d52.up.railway.app/api/planocontas/${accountToDelete.id}`
       );
       fetchAccounts();
+      closeDeletePopup();
     } catch (error) {
       console.error("Erro ao deletar conta:", error);
     }
@@ -182,9 +195,7 @@ const AccountPlan = () => {
                         <button onClick={() => handleEditAccount(account)}>
                           Editar
                         </button>
-                        <button
-                          onClick={() => handleDeleteAccount(account.id)}
-                        >
+                        <button onClick={() => openDeletePopup(account)}>
                           Excluir
                         </button>
                       </td>
@@ -201,6 +212,7 @@ const AccountPlan = () => {
         </section>
       </div>
 
+      {/* Popup para adicionar ou editar contas */}
       {isPopupOpen && (
         <div className="popup-overlay">
           <div className="popup-content">
@@ -255,6 +267,23 @@ const AccountPlan = () => {
                 {isEditMode ? "Atualizar" : "Salvar"}
               </button>
               <button onClick={() => setIsPopupOpen(false)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Popup de confirmação para exclusão */}
+      {isDeletePopupOpen && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h3>Confirmação</h3>
+            <p>
+              Tem certeza que deseja excluir a conta "
+              {accountToDelete?.conta}"?
+            </p>
+            <div className="popup-actions">
+              <button onClick={confirmDeleteAccount}>Sim</button>
+              <button onClick={closeDeletePopup}>Não</button>
             </div>
           </div>
         </div>
