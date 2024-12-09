@@ -61,7 +61,7 @@ function ForgotPassword() {
     }
 
     try {
-      const response = await axios.post("https://auth-coinn20-production.up.railway.app/auth/reset-password", {
+      const response = await axios.post("https://auth-coinn20-production-c568.up.railway.app/auth/reset-password", {
         email,
         newPassword,
       });

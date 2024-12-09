@@ -31,7 +31,7 @@ const Empresa = () => {
 
   useEffect(() => {
     axios
-      .get("https://coin-backend-production-5d52.up.railway.app/api/empresas")
+      .get("https://coin-backend-production-66e9.up.railway.app/api/empresas")
       .then((response) => setEmpresas(response.data))
       .catch((error) => console.error("Erro ao buscar dados:", error));
   }, []);
@@ -110,7 +110,7 @@ const Empresa = () => {
     if (editMode && selectedEmpresa) {
       axios
         .put(
-          `https://coin-backend-production-5d52.up.railway.app/api/empresas/${selectedEmpresa.id}`,
+          `https://coin-backend-production-66e9.up.railway.app/api/empresas/${selectedEmpresa.id}`,
           formValues
         )
         .then((response) => {
@@ -124,7 +124,7 @@ const Empresa = () => {
         .catch((error) => console.error("Erro ao editar:", error));
     } else {
       axios
-        .post("https://coin-backend-production-5d52.up.railway.app/api/empresas", formValues)
+        .post("https://coin-backend-production-66e9.up.railway.app/api/empresas", formValues)
         .then((response) => {
           setEmpresas([...empresas, response.data]);
           closeModal();
@@ -136,7 +136,7 @@ const Empresa = () => {
   const confirmarDelecao = () => {
     axios
       .delete(
-        `https://coin-backend-production-5d52.up.railway.app/api/empresas/${empresaParaDeletar.id}`
+        `https://coin-backend-production-66e9.up.railway.app/api/empresas/${empresaParaDeletar.id}`
       )
       .then(() => {
         setEmpresas(empresas.filter((emp) => emp.id !== empresaParaDeletar.id));

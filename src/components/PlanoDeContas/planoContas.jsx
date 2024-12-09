@@ -26,7 +26,7 @@ const AccountPlan = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        "https://coin-backend-production-5d52.up.railway.app/api/planocontas"
+        "https://coin-backend-production-66e9.up.railway.app/api/planocontas"
       );
       setAccounts(response.data);
     } catch (error) {
@@ -86,7 +86,7 @@ const AccountPlan = () => {
   const confirmDeleteAccount = async () => {
     try {
       await axios.delete(
-        `https://coin-backend-production-5d52.up.railway.app/api/planocontas/${accountToDelete.id}`
+        `https://coin-backend-production-66e9.up.railway.app/api/planocontas/${accountToDelete.id}`
       );
       fetchAccounts();
       closeDeletePopup();
@@ -121,12 +121,12 @@ const AccountPlan = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `https://coin-backend-production-5d52.up.railway.app/api/planocontas/${currentId}`,
+          `https://coin-backend-production-66e9.up.railway.app/api/planocontas/${currentId}`,
           form
         );
       } else {
         await axios.post(
-          "https://coin-backend-production-5d52.up.railway.app/api/planocontas",
+          "https://coin-backend-production-66e9.up.railway.app/api/planocontas",
           form
         );
       }

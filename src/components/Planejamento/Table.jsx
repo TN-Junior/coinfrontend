@@ -28,7 +28,7 @@ function Table() {
 
   const carregarContas = async () => {
     try {
-      const response = await axios.get('https://coin-backend-production-5d52.up.railway.app/api/contas');
+      const response = await axios.get('https://coin-backend-production-66e9.up.railway.app/api/contas');
       setContas(response.data);
     } catch (error) {
       console.error('Erro ao carregar contas:', error);
@@ -102,10 +102,10 @@ function Table() {
       const valorEmNumero = parseFloat(novaConta.valor.replace(".", "").replace(",", "."));
       const contaParaEnviar = { ...novaConta, valor: valorEmNumero };
       if (isEditing) {
-        const response = await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/contas/${editId}`, contaParaEnviar);
+        const response = await axios.put(`https://coin-backend-production-66e9.up.railway.app/api/contas/${editId}`, contaParaEnviar);
         setContas(contas.map(conta => (conta.id === editId ? response.data : conta)));
       } else {
-        const response = await axios.post('https://coin-backend-production-5d52.up.railway.app/api/contas', contaParaEnviar);
+        const response = await axios.post('https://coin-backend-production-66e9.up.railway.app/api/contas', contaParaEnviar);
         setContas([...contas, response.data]);
       }
       resetForm();
@@ -149,7 +149,7 @@ function Table() {
 
   const deletarConta = async (id) => {
     try {
-      await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/contas/${id}`);
+      await axios.delete(`https://coin-backend-production-66e9.up.railway.app/api/contas/${id}`);
       setContas(contas.filter(conta => conta.id !== id));
       setContaSelecionada(null);
     } catch (error) {

@@ -35,7 +35,7 @@ const Pagamentos = () => {
   const loadPagamentos = async (isReceitas) => {
     try {
       const tipo = isReceitas ? 'RECEITA' : 'DESPESA';
-      const response = await axios.get(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${tipo}`);
+      const response = await axios.get(`https://coin-backend-production-66e9.up.railway.app/api/pagamentos/${tipo}`);
       setPagamentos(response.data);
     } catch (error) {
       console.error('Erro ao carregar pagamentos:', error);
@@ -113,9 +113,9 @@ const Pagamentos = () => {
         tipo,
       };
       if (pagamentoAtual) {
-        await axios.put(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${pagamentoAtual.id}`, pagamento);
+        await axios.put(`https://coin-backend-production-66e9.up.railway.app/api/pagamentos/${pagamentoAtual.id}`, pagamento);
       } else {
-        await axios.post('https://coin-backend-production-5d52.up.railway.app/api/pagamentos', pagamento);
+        await axios.post('https://coin-backend-production-66e9.up.railway.app/api/pagamentos', pagamento);
       }
       loadPagamentos(isReceitas);
       closeModal();
@@ -126,7 +126,7 @@ const Pagamentos = () => {
 
   const confirmarDelecao = async () => {
     try {
-      await axios.delete(`https://coin-backend-production-5d52.up.railway.app/api/pagamentos/${pagamentoParaDeletar.id}`);
+      await axios.delete(`https://coin-backend-production-66e9.up.railway.app/api/pagamentos/${pagamentoParaDeletar.id}`);
       loadPagamentos(isReceitas);
       closeDeleteModal();
     } catch (error) {

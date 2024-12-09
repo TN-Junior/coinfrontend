@@ -68,7 +68,7 @@ function Login() {
     }
 
     try {
-        const response = await axios.post("https://auth-coinn20-production.up.railway.app/auth/login", {
+        const response = await axios.post("https://auth-coinn20-production-c568.up.railway.app/auth/login", {
             email,
             password,
             captchaToken,
