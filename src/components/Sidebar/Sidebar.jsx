@@ -11,7 +11,7 @@ const Sidebar = () => {
     
         try {
             // Chamar o backend para invalidar o token (opcional)
-            await fetch('https://auth-coinn20-production.up.railway.app/logout', {
+            await fetch('https://auth-coinn20-production.up.railway.app/logout', 'https://auth-coinn20-production.up.railway.app/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
